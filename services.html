@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - Sechman Financial</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles specific to services page */
+        .services-hero {
+            height: 40vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-bg.jpg') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--light-text);
+            padding-top: 80px;
+        }
+        
+        .services-hero h1 {
+            margin-bottom: 20px;
+        }
+        
+        .services-section {
+            padding: 80px 0;
+        }
+        
+        .service-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+        
+        .service-detail:nth-child(even) {
+            direction: rtl;
+        }
+        
+        .service-detail:nth-child(even) .service-text {
+            direction: ltr;
+        }
+        
+        .service-text {
+            padding-right: 30px;
+        }
+        
+        .service-text h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .service-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .service-text ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .service-text ul li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .service-text ul li::before {
+            content: '•';
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+        }
+        
+        .service-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .service-features {
+            background-color: var(--secondary-color);
+            padding: 80px 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .cta-section {
+            padding: 80px 0;
+            text-align: center;
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        
+        .cta-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .service-detail {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-text {
+                padding-right: 0;
+            }
+            
+            .service-detail:nth-child(even) {
+                direction: ltr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Sechman Financial</h1>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="services.html" class="active">Services</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="news.html">News</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Hero Section -->
+    <section class="services-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Our Services</h1>
+                <p>Comprehensive Financial Solutions for Your Future</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Services Section -->
+    <section class="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Financial Services</h2>
+                <p>Tailored Solutions for Your Financial Goals</p>
+            </div>
+            
+            <!-- Investment Management -->
+            <div class="service-detail">
+                <div class="service-text">
+                    <h3>Investment Management</h3>
+                    <p>Our investment management service provides personalized strategies designed to help you achieve your financial goals while managing risk effectively.</p>
+                    <ul>
+                        <li>Customized investment portfolios</li>
+                        <li>Regular portfolio rebalancing</li>
+                        <li>Risk assessment and management</li>
+                        <li>Performance monitoring and reporting</li>
+                        <li>Tax-efficient investment strategies</li>
+                    </ul>
+                    <a href="contact.html" class="btn-outline">Learn More</a>
+                </div>
+                <div class="service-image">
+                    <img src="images/placeholder-image.jpg" alt="Investment Management" onerror="this.outerHTML='<div class=\'image-fallback\'>Investment Management Image Placeholder<br>(Add your image here)</div>'">
+                </div>
+            </div>
+            
+            <!-- Retirement Planning -->
+            <div class="service-detail">
+                <div class="service-text">
+                    <h3>Retirement Planning</h3>
+                    <p>We help you create a comprehensive retirement strategy that ensures financial security in your golden years.</p>
+                    <ul>
+                        <li>Retirement income planning</li>
+                        <li>Social Security optimization</li>
+                        <li>Retirement account management</li>
+                        <li>Healthcare cost planning</li>
+                        <li>Lifestyle and legacy planning</li>
+                    </ul>
+                    <a href="contact.html" class="btn-outline">Learn More</a>
+                </div>
+                <div class="service-image">
+                    <img src="images/placeholder-image.jpg" alt="Retirement Planning" onerror="this.outerHTML='<div class=\'image-fallback\'>Retirement Planning Image Placeholder<br>(Add your image here)</div>'">
+                </div>
+            </div>
+            
+            <!-- Estate Planning -->
+            <div class="service-detail">
+                <div class="service-text">
+                    <h3>Estate Planning</h3>
+                    <p>Protect your assets and ensure your legacy is preserved for future generations with our comprehensive estate planning services.</p>
+                    <ul>
+                        <li>Will and trust creation</li>
+                        <li>Asset protection strategies</li>
+                        <li>Charitable giving planning</li>
+                        <li>Business succession planning</li>
+                        <li>Estate tax minimization</li>
+                    </ul>
+                    <a href="contact.html" class="btn-outline">Learn More</a>
+                </div>
+                <div class="service-image">
+                    <img src="images/placeholder-image.jpg" alt="Estate Planning" onerror="this.outerHTML='<div class=\'image-fallback\'>Estate Planning Image Placeholder<br>(Add your image here)</div>'">
+                </div>
+            </div>
+            
+            <!-- Tax Planning -->
+            <div class="service-detail">
+                <div class="service-text">
+                    <h3>Tax Planning</h3>
+                    <p>Our tax planning services help you minimize tax liabilities and maximize your financial potential through strategic planning.</p>
+                    <ul>
+                        <li>Tax-efficient investment strategies</li>
+                        <li>Retirement account optimization</li>
+                        <li>Charitable giving strategies</li>
+                        <li>Business tax planning</li>
+                        <li>Tax-loss harvesting</li>
+                    </ul>
+                    <a href="contact.html" class="btn-outline">Learn More</a>
+                </div>
+                <div class="service-image">
+                    <img src="images/placeholder-image.jpg" alt="Tax Planning" onerror="this.outerHTML='<div class=\'image-fallback\'>Tax Planning Image Placeholder<br>(Add your image here)</div>'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Features Section -->
+    <section class="service-features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Our Services</h2>
+                <p>The Benefits of Working with Sechman Financial</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Personalized Approach</h3>
+                    <p>We create customized solutions tailored to your unique financial situation and goals.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Expert Guidance</h3>
+                    <p>Our experienced team provides expert advice based on years of industry knowledge.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Risk Management</h3>
+                    <p>We help you manage and mitigate financial risks while pursuing your goals.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-sync"></i>
+                    <h3>Regular Updates</h3>
+                    <p>We provide ongoing support and regular portfolio reviews to keep you on track.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Your Financial Journey?</h2>
+            <p>Schedule a consultation with our team to discuss your financial goals and how we can help you achieve them.</p>
+            <a href="contact.html" class="btn">Schedule Consultation</a>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Sechman Financial</h2>
+                    <p>Your Financial Partner for Life</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="index.html#home">Home</a></li>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="services.html">Services</a></li>
+                            <li><a href="resources.html">Resources</a></li>
+                            <li><a href="news.html">News</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Services</h3>
+                        <ul>
+                            <li><a href="services.html">Investment Management</a></li>
+                            <li><a href="services.html">Retirement Planning</a></li>
+                            <li><a href="services.html">Estate Planning</a></li>
+                            <li><a href="services.html">Tax Planning</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Disclaimer</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Sechman Financial. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
