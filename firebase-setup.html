@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Setup - Sechman Financial</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .setup-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .setup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .setup-header h1 {
+            color: var(--primary-color);
+        }
+        
+        .setup-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .setup-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .status-container {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+        
+        .status-heading {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .status-log {
+            height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .log-entry.success {
+            color: #28a745;
+        }
+        
+        .log-entry.error {
+            color: #dc3545;
+        }
+        
+        .log-entry.info {
+            color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1>Firebase Setup for Sechman Financial</h1>
+            <p>This page will help you set up Firebase for your news management system.</p>
+        </div>
+        
+        <div class="setup-form">
+            <h2>Step 1: Enter Your Firebase Configuration</h2>
+            <p>You can find this information in your Firebase project settings.</p>
+            
+            <div class="form-group">
+                <label for="apiKey">API Key</label>
+                <input type="text" id="apiKey" placeholder="Enter your Firebase API Key">
+            </div>
+            
+            <div class="form-group">
+                <label for="authDomain">Auth Domain</label>
+                <input type="text" id="authDomain" placeholder="your-project-id.firebaseapp.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="projectId">Project ID</label>
+                <input type="text" id="projectId" placeholder="your-project-id">
+            </div>
+            
+            <div class="form-group">
+                <label for="storageBucket">Storage Bucket</label>
+                <input type="text" id="storageBucket" placeholder="your-project-id.appspot.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="messagingSenderId">Messaging Sender ID</label>
+                <input type="text" id="messagingSenderId" placeholder="Your messaging sender ID">
+            </div>
+            
+            <div class="form-group">
+                <label for="appId">App ID</label>
+                <input type="text" id="appId" placeholder="Your app ID">
+            </div>
+            
+            <h2>Step 2: Set Admin Account</h2>
+            <p>This will be the email and password you use to access the news management dashboard.</p>
+            
+            <div class="form-group">
+                <label for="adminEmail">Admin Email</label>
+                <input type="email" id="adminEmail" value="samsechman@gmail.com" readonly>
+                <small>This email is set in the code and cannot be changed here.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="adminPassword">Admin Password</label>
+                <input type="password" id="adminPassword" placeholder="Choose a secure password">
+            </div>
+            
+            <div class="setup-actions">
+                <button id="setupButton" class="btn">Run Setup</button>
+            </div>
+        </div>
+        
+        <div class="status-container">
+            <div class="status-heading">Setup Status</div>
+            <div id="statusLog" class="status-log">
+                <div class="log-entry info">Waiting for setup to begin...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const setupButton = document.getElementById('setupButton');
+            const statusLog = document.getElementById('statusLog');
+            
+            // Function to add log entry
+            function addLogEntry(message, type = 'info') {
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.textContent = message;
+                statusLog.appendChild(entry);
+                statusLog.scrollTop = statusLog.scrollHeight;
+            }
+            
+            // Setup button click handler
+            setupButton.addEventListener('click', async function() {
+                // Get all the form values
+                const apiKey = document.getElementById('apiKey').value.trim();
+                const authDomain = document.getElementById('authDomain').value.trim();
+                const projectId = document.getElementById('projectId').value.trim();
+                const storageBucket = document.getElementById('storageBucket').value.trim();
+                const messagingSenderId = document.getElementById('messagingSenderId').value.trim();
+                const appId = document.getElementById('appId').value.trim();
+                const adminEmail = document.getElementById('adminEmail').value.trim();
+                const adminPassword = document.getElementById('adminPassword').value.trim();
+                
+                // Validate form
+                if (!apiKey || !authDomain || !projectId || !storageBucket || !messagingSenderId || !appId) {
+                    addLogEntry('Please fill in all Firebase configuration fields.', 'error');
+                    return;
+                }
+                
+                if (!adminPassword || adminPassword.length < 6) {
+                    addLogEntry('Please enter a secure password (at least 6 characters).', 'error');
+                    return;
+                }
+                
+                addLogEntry('Starting Firebase setup...');
+                
+                // Initialize Firebase with provided config
+                const firebaseConfig = {
+                    apiKey,
+                    authDomain,
+                    projectId,
+                    storageBucket,
+                    messagingSenderId,
+                    appId
+                };
+                
+                // Clear any existing Firebase apps
+                if (firebase.apps.length) {
+                    firebase.app().delete().then(() => {
+                        addLogEntry('Previous Firebase app instance cleared.');
+                    });
+                }
+                
+                // Initialize Firebase
+                try {
+                    firebase.initializeApp(firebaseConfig);
+                    addLogEntry('Firebase initialized successfully.', 'success');
+                } catch (error) {
+                    addLogEntry(`Firebase initialization error: ${error.message}`, 'error');
+                    return;
+                }
+                
+                // Create admin account
+                try {
+                    addLogEntry('Creating admin account...');
+                    
+                    // Create user with email and password
+                    const userCredential = await firebase.auth().createUserWithEmailAndPassword(adminEmail, adminPassword);
+                    addLogEntry(`Admin account created successfully: ${userCredential.user.email}`, 'success');
+                    
+                    // Store admin metadata in Firestore
+                    const db = firebase.firestore();
+                    await db.collection("users").doc(userCredential.user.uid).set({
+                        email: adminEmail,
+                        role: "admin",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    addLogEntry('Admin metadata stored in Firestore.', 'success');
+                } catch (error) {
+                    if (error.code === 'auth/email-already-in-use') {
+                        addLogEntry('Admin email already exists. Proceeding with setup...', 'info');
+                    } else {
+                        addLogEntry(`Error creating admin account: ${error.message}`, 'error');
+                        return;
+                    }
+                }
+                
+                // Add sample articles
+                try {
+                    addLogEntry('Adding sample articles...');
+                    
+                    const db = firebase.firestore();
+                    const articlesCollection = db.collection("articles");
+                    
+                    // Sample article 1
+                    await articlesCollection.add({
+                        title: "How Inflation Impacts Your Investment Strategy",
+                        date: "July 12, 2023",
+                        rawDate: "2023-07-12",
+                        summary: "Learn about the effects of inflation on various asset classes and how to position your portfolio for long-term success.",
+                        url: "https://www.investopedia.com/articles/investing/090215/how-inflation-affects-your-investments.asp",
+                        imageUrl: "https://www.investopedia.com/thmb/j1OY-YZ-3fDiRGkCZwFsUOT1q3g=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/primary-image-1-8d1faec2a3744ea1b16f042ec1f3b0ee.png",
+                        source: "Investopedia",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Sample article 2
+                    await articlesCollection.add({
+                        title: "Retirement Planning in Your 50s: Critical Steps to Take Now",
+                        date: "June 28, 2023",
+                        rawDate: "2023-06-28",
+                        summary: "If you're in your 50s, it's time to get serious about retirement planning. Here are key strategies to consider.",
+                        url: "https://www.fool.com/retirement/how-to-plan-for-retirement/",
+                        imageUrl: "https://g.foolcdn.com/editorial/images/719385/gettyimages-1452318516.jpg",
+                        source: "The Motley Fool",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Sample article 3
+                    await articlesCollection.add({
+                        title: "5 Tax Planning Strategies to Maximize Your Wealth",
+                        date: "June 15, 2023",
+                        rawDate: "2023-06-15",
+                        summary: "Effective tax planning can significantly impact your long-term financial goals. Explore these expert-recommended strategies.",
+                        url: "https://www.forbes.com/advisor/taxes/tax-planning-guide/",
+                        imageUrl: "https://www.forbes.com/advisor/wp-content/uploads/2022/09/tax_planning.jpeg.jpg",
+                        source: "Forbes Advisor",
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    addLogEntry('Sample articles added successfully!', 'success');
+                } catch (error) {
+                    addLogEntry(`Error adding sample articles: ${error.message}`, 'error');
+                    return;
+                }
+                
+                // Generate firebase-config.js content
+                const configFileContent = `// Firebase configuration
+const firebaseConfig = {
+  apiKey: "${apiKey}",
+  authDomain: "${authDomain}",
+  projectId: "${projectId}",
+  storageBucket: "${storageBucket}",
+  messagingSenderId: "${messagingSenderId}",
+  appId: "${appId}"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+// Authentication functions
+function loginAdmin(password) {
+  // The admin uses a predefined email with the provided password
+  return auth.signInWithEmailAndPassword("${adminEmail}", password);
+}
+
+function checkAuthStatus() {
+  return new Promise((resolve) => {
+    auth.onAuthStateChanged((user) => {
+      resolve(user);
+    });
+  });
+}
+
+function logoutAdmin() {
+  return auth.signOut();
+}
+
+// Database functions for news articles
+function getArticles() {
+  return db.collection("articles")
+    .orderBy("createdAt", "desc")
+    .get()
+    .then((querySnapshot) => {
+      const articles = [];
+      querySnapshot.forEach((doc) => {
+        articles.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      return articles;
+    });
+}
+
+function addArticle(articleData) {
+  return db.collection("articles").add({
+    ...articleData,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+function deleteArticle(articleId) {
+  return db.collection("articles").doc(articleId).delete();
+}
+
+function updateArticle(articleId, articleData) {
+  return db.collection("articles").doc(articleId).update({
+    ...articleData,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}`;
+                
+                // Display the config content for copying
+                addLogEntry('Setup completed successfully!', 'success');
+                addLogEntry('IMPORTANT: Copy the following content to your firebase-config.js file:', 'info');
+                addLogEntry(configFileContent, 'info');
+                addLogEntry('You can now use the news-management-dashboard-sxf73.html page to manage your articles.', 'success');
+                addLogEntry(`Login with email: ${adminEmail} and the password you set.`, 'success');
+            });
+        });
+    </script>
+</body>
+</html> 
