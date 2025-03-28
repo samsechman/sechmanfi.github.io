@@ -16,6 +16,48 @@
             border-radius: 5px;
             font-weight: bold;
         }
+        
+        /* Latest article styling */
+        .latest-article {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .latest-article h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .article-date {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .article-date i {
+            margin-right: 5px;
+        }
+        
+        .article-link {
+            display: inline-block;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-top: 10px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .article-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .article-link i {
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -29,7 +71,6 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#home">Home</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="services.html">Services</a></li>
                     <li><a href="resources.html">Resources</a></li>
@@ -154,8 +195,8 @@
                 <h2>Latest News</h2>
                 <p>Stay Informed with Our Financial Insights</p>
             </div>
-            <div class="news-preview">
-                <p>Visit our News section to read the latest articles and insights from our financial experts. We regularly publish content on market trends, investment strategies, retirement planning, and more.</p>
+            <div class="news-preview" id="news-preview">
+                <p id="news-loading">Loading the latest financial articles...</p>
                 <div class="news-cta">
                     <a href="news.html" class="btn">View All Articles</a>
                 </div>
@@ -225,21 +266,8 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form action="#" method="POST">
-                        <div class="form-group">
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" id="phone" name="phone" placeholder="Your Phone">
-                        </div>
-                        <div class="form-group">
-                            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn">Send Message</button>
-                    </form>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScRjPeZe3aYCGr6PsjDKGcJG3HnZfPQjK9M3NpdtOJ51osJnQ/viewform?embedded=true" width="640" height="856" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+                    <p style="margin-top: 15px; font-size: 0.9em; color: #666;">Your message will be sent directly to our team at samsechman@gmail.com</p>
                 </div>
             </div>
         </div>
@@ -291,5 +319,49 @@
     </footer>
 
     <script src="script.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load latest news article for the News Highlight section
+            const newsPreview = document.getElementById('news-preview');
+            const newsLoading = document.getElementById('news-loading');
+            
+            // Get the most recent article from Firestore
+            db.collection("articles")
+                .orderBy("createdAt", "desc")
+                .limit(1)
+                .get()
+                .then((querySnapshot) => {
+                    // Check if we have any articles
+                    if (querySnapshot.empty) {
+                        newsLoading.textContent = "Visit our News section to read the latest articles and insights from our financial experts. We regularly publish content on market trends, investment strategies, retirement planning, and more.";
+                        return;
+                    }
+                    
+                    // Get the latest article
+                    const article = querySnapshot.docs[0].data();
+                    
+                    // Create HTML for the latest article
+                    const articleHTML = `
+                        <div class="latest-article">
+                            <h3>${article.title}</h3>
+                            <p class="article-date"><i class="far fa-calendar-alt"></i> ${article.date}</p>
+                            <p>${article.summary}</p>
+                            <a href="${article.url}" class="article-link" target="_blank">Read the full article <i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    `;
+                    
+                    // Replace loading text with the article
+                    newsLoading.outerHTML = articleHTML;
+                })
+                .catch((error) => {
+                    console.error("Error getting latest article: ", error);
+                    newsLoading.textContent = "Visit our News section to read the latest articles and insights from our financial experts. We regularly publish content on market trends, investment strategies, retirement planning, and more.";
+                });
+        });
+    </script>
 </body>
 </html> 

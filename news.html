@@ -6,6 +6,10 @@
     <title>News Articles - Sechman Financial</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
     <style>
         /* Additional styles specific to news page */
         .news-hero {
@@ -78,35 +82,32 @@
             opacity: 0.8;
         }
         
-        .admin-controls {
-            margin-top: 50px;
-            text-align: center;
-        }
-        
-        #add-article-form {
-            max-width: 800px;
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
             margin: 40px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: var(--box-shadow);
-            display: none;
         }
         
-        #add-article-form.active {
-            display: block;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
+        .loading-container {
+            text-align: center;
+            padding: 40px;
+            grid-column: 1/-1;
         }
         
-        .form-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            grid-column: 1/-1;
+            color: #666;
         }
     </style>
 </head>
@@ -121,9 +122,9 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html#home">Home</a></li>
-                    <li><a href="index.html#about">About</a></li>
-                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="services.html">Services</a></li>
                     <li><a href="resources.html">Resources</a></li>
                     <li><a href="news.html" class="active">News</a></li>
                     <li><a href="contact.html">Contact</a></li>
@@ -155,86 +156,12 @@
                 <p>Updates from our financial experts</p>
             </div>
             
-            <div class="news-grid">
-                <!-- Sample Article 1 -->
-                <div class="news-card">
-                    <div class="news-image">
-                        <span class="news-date">June 15, 2023</span>
-                        <img src="images/placeholder-image.jpg" alt="Market Trends" onerror="this.outerHTML='<div class=\'image-fallback\'>Article Image</div>'">
-                    </div>
-                    <div class="news-content">
-                        <h3>Understanding Market Volatility in 2023</h3>
-                        <p>Our experts analyze the current market conditions and provide insights on navigating volatility.</p>
-                        <a href="#" class="btn-outline">Read More</a>
-                    </div>
+            <div class="news-grid" id="news-grid">
+                <!-- Loading spinner will show while articles load -->
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>Loading articles...</p>
                 </div>
-                
-                <!-- Sample Article 2 -->
-                <div class="news-card">
-                    <div class="news-image">
-                        <span class="news-date">May 28, 2023</span>
-                        <img src="images/placeholder-image.jpg" alt="Retirement Planning" onerror="this.outerHTML='<div class=\'image-fallback\'>Article Image</div>'">
-                    </div>
-                    <div class="news-content">
-                        <h3>Retirement Planning Strategies for Millennials</h3>
-                        <p>Early planning is key to a secure retirement. Learn how millennials can start building their nest egg.</p>
-                        <a href="#" class="btn-outline">Read More</a>
-                    </div>
-                </div>
-                
-                <!-- Sample Article 3 -->
-                <div class="news-card">
-                    <div class="news-image">
-                        <span class="news-date">May 10, 2023</span>
-                        <img src="images/placeholder-image.jpg" alt="Tax Strategies" onerror="this.outerHTML='<div class=\'image-fallback\'>Article Image</div>'">
-                    </div>
-                    <div class="news-content">
-                        <h3>Tax-Efficient Investment Strategies</h3>
-                        <p>Maximize your returns by minimizing tax impact. Our guide to creating tax-efficient portfolios.</p>
-                        <a href="#" class="btn-outline">Read More</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Admin Controls -->
-            <div class="admin-controls">
-                <button id="show-add-form" class="btn">Add New Article</button>
-            </div>
-            
-            <!-- Add Article Form -->
-            <div id="add-article-form">
-                <h3>Add New Article</h3>
-                <form id="article-form">
-                    <div class="form-group">
-                        <label for="article-title">Article Title</label>
-                        <input type="text" id="article-title" name="article-title" required placeholder="Enter article title">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="article-date">Publication Date</label>
-                        <input type="date" id="article-date" name="article-date" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="article-image">Image URL (optional)</label>
-                        <input type="text" id="article-image" name="article-image" placeholder="Enter image URL">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="article-summary">Article Summary</label>
-                        <textarea id="article-summary" name="article-summary" required placeholder="Enter a brief summary" rows="3"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="article-content">Article Content</label>
-                        <textarea id="article-content" name="article-content" required placeholder="Enter the full article content" rows="8"></textarea>
-                    </div>
-                    
-                    <div class="form-buttons">
-                        <button type="button" id="cancel-add" class="btn-outline">Cancel</button>
-                        <button type="submit" class="btn">Add Article</button>
-                    </div>
-                </form>
             </div>
         </div>
     </section>
@@ -251,9 +178,9 @@
                     <div class="footer-links-column">
                         <h3>Quick Links</h3>
                         <ul>
-                            <li><a href="index.html#home">Home</a></li>
-                            <li><a href="index.html#about">About</a></li>
-                            <li><a href="index.html#services">Services</a></li>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="services.html">Services</a></li>
                             <li><a href="resources.html">Resources</a></li>
                             <li><a href="news.html">News</a></li>
                             <li><a href="contact.html">Contact</a></li>
@@ -262,10 +189,10 @@
                     <div class="footer-links-column">
                         <h3>Services</h3>
                         <ul>
-                            <li><a href="index.html#services">Investment Management</a></li>
-                            <li><a href="index.html#services">Retirement Planning</a></li>
-                            <li><a href="index.html#services">Estate Planning</a></li>
-                            <li><a href="index.html#services">Tax Planning</a></li>
+                            <li><a href="services.html">Investment Management</a></li>
+                            <li><a href="services.html">Retirement Planning</a></li>
+                            <li><a href="services.html">Estate Planning</a></li>
+                            <li><a href="services.html">Tax Planning</a></li>
                         </ul>
                     </div>
                     <div class="footer-links-column">
@@ -286,77 +213,67 @@
 
     <script src="script.js"></script>
     <script>
-        // News article functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const showFormButton = document.getElementById('show-add-form');
-            const addArticleForm = document.getElementById('add-article-form');
-            const cancelAddButton = document.getElementById('cancel-add');
-            const articleForm = document.getElementById('article-form');
-            const newsGrid = document.querySelector('.news-grid');
+            const newsGrid = document.getElementById('news-grid');
             
-            // Show form when "Add New Article" button is clicked
-            if (showFormButton) {
-                showFormButton.addEventListener('click', function() {
-                    addArticleForm.classList.add('active');
-                    showFormButton.style.display = 'none';
-                });
-            }
-            
-            // Hide form when "Cancel" button is clicked
-            if (cancelAddButton) {
-                cancelAddButton.addEventListener('click', function() {
-                    addArticleForm.classList.remove('active');
-                    showFormButton.style.display = 'inline-block';
-                    articleForm.reset();
-                });
-            }
-            
-            // Handle form submission
-            if (articleForm) {
-                articleForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Get form values
-                    const title = document.getElementById('article-title').value;
-                    const date = document.getElementById('article-date').value;
-                    const imageUrl = document.getElementById('article-image').value || 'images/placeholder-image.jpg';
-                    const summary = document.getElementById('article-summary').value;
-                    
-                    // Format date for display
-                    const formattedDate = new Date(date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+            // Function to load articles from Firebase
+            function loadArticles() {
+                // Get articles from Firestore
+                db.collection("articles")
+                    .orderBy("createdAt", "desc")
+                    .get()
+                    .then((querySnapshot) => {
+                        // Clear loading spinner
+                        newsGrid.innerHTML = '';
+                        
+                        // Check if we have any articles
+                        if (querySnapshot.empty) {
+                            newsGrid.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-newspaper" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                                    <h3>No Articles Yet</h3>
+                                    <p>Check back soon for the latest financial news and insights.</p>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        // Create article cards
+                        querySnapshot.forEach((doc) => {
+                            const article = doc.data();
+                            const articleCard = document.createElement('div');
+                            articleCard.className = 'news-card';
+                            articleCard.innerHTML = `
+                                <div class="news-image">
+                                    <span class="news-date">${article.date}</span>
+                                    <img src="${article.imageUrl}" alt="${article.title}" onerror="this.outerHTML='<div class=\\'image-fallback\\'>Article Image</div>'">
+                                </div>
+                                <div class="news-content">
+                                    <h3>${article.title}</h3>
+                                    <p>${article.summary}</p>
+                                    <a href="${article.url}" class="btn-outline" target="_blank">Read Article <i class="fas fa-external-link-alt" style="font-size: 0.8em; margin-left: 5px;"></i></a>
+                                </div>
+                            `;
+                            
+                            newsGrid.appendChild(articleCard);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error getting articles: ", error);
+                        newsGrid.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff6b6b; margin-bottom: 20px;"></i>
+                                <h3>Error Loading Articles</h3>
+                                <p>Sorry, we couldn't load the articles at this time. Please try again later.</p>
+                                <p style="color: #999; font-size: 0.8rem;">Error: ${error.message}</p>
+                            </div>
+                        `;
                     });
-                    
-                    // Create new article HTML
-                    const newArticleHTML = `
-                        <div class="news-card">
-                            <div class="news-image">
-                                <span class="news-date">${formattedDate}</span>
-                                <img src="${imageUrl}" alt="${title}" onerror="this.outerHTML='<div class=\\'image-fallback\\'>Article Image</div>'">
-                            </div>
-                            <div class="news-content">
-                                <h3>${title}</h3>
-                                <p>${summary}</p>
-                                <a href="#" class="btn-outline">Read More</a>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Add the new article to the grid (prepend to show newest first)
-                    newsGrid.insertAdjacentHTML('afterbegin', newArticleHTML);
-                    
-                    // Hide form and reset
-                    addArticleForm.classList.remove('active');
-                    showFormButton.style.display = 'inline-block';
-                    articleForm.reset();
-                    
-                    // Show success message
-                    alert('Article added successfully!');
-                });
             }
+            
+            // Load articles
+            loadArticles();
         });
     </script>
 </body>
-</html> 
+</html>
